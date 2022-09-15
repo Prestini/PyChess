@@ -1,4 +1,5 @@
 from const import *
+from fen_parser import FenParser
 from piece import *
 from square import Square
 
@@ -6,39 +7,23 @@ class Board:
 
     def __init__(self) -> None:
         self.squares = [[0,0,0,0,0,0,0,0] for col in range(COLS)]
+        self._create_board()
+        self._add_pieces(STARTING_POSITION)
 
-        self._create()
-        self._add_pieces('white')
-        self._add_pieces('black')
-
-    def _create(self):
+    def _create_board(self):
         for row in range(ROWS):
             for col in range(COLS):
                 self.squares[row][col] = Square(row, col)
+    
+    def _add_pieces(self, fen):
+        fen_parser = FenParser(fen)
+        squares = fen_parser.parse()
+        for row_index, row in enumerate(squares):
+            for col_index, square in enumerate(row):
+                if square == ' ':
+                    pass
+                else:
+                    self._add_piece_to_square(row_index, col_index, get_piece_by_fen(square))
 
-    def _add_pieces(self, color):
-        # TODO Change this to receive FEN string
-
-        row_pawn, row_other = (6,7) if color == 'white' else (0,1)
-
-        # Creating all pawns
-        for col in range(COLS):
-            self.squares[row_pawn][col] = Square(row_pawn, col, Pawn(color))
-
-        # Rooks
-        self.squares[row_other][0] = Square(row_other, 0, Rook(color))
-        self.squares[row_other][7] = Square(row_other, 7, Rook(color))
-
-        # Knights
-        self.squares[row_other][1] = Square(row_other, 1, Knight(color))
-        self.squares[row_other][6] = Square(row_other, 6, Knight(color))
-
-        # Bishops
-        self.squares[row_other][2] = Square(row_other, 2, Bishop(color))
-        self.squares[row_other][5] = Square(row_other, 5, Bishop(color))
-
-        # Queen
-        self.squares[row_other][3] = Square(row_other, 3, Queen(color))
-
-        # King
-        self.squares[row_other][4] = Square(row_other, 4, King(color))
+    def _add_piece_to_square(self, row, col, piece: Piece):
+        self.squares[row][col] = Square(row, col, piece)
