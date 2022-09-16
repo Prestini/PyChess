@@ -20,12 +20,16 @@ class Piece:
         self.texture = os.path.join(
             f'assets/images/{size}px/{self.color}{self.name}.png')
     
-    def add_moves(self, move):
+    def add_move(self, move):
         self.moves.append(move)
+
+    def clear_moves(self):
+        self.moves = []
 
 class Pawn(Piece):
     def __init__(self, color) -> None:
         self.dir = -1 if color == 'w' else 1
+        self.en_passant = False
         super().__init__('P', color, 1.0)
 
 class Knight(Piece):
@@ -46,6 +50,8 @@ class Queen(Piece):
 
 class King(Piece):
     def __init__(self, color) -> None:
+        self.left_rook = None
+        self.right_rook = None
         super().__init__('K', color, 10_000.0)
 
 # Pieces Dictionary

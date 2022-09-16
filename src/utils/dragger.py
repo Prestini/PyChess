@@ -24,6 +24,7 @@ class Dragger:
         # rect
         img_center = (self.mouseX, self.mouseY)
         self.piece.texture_rect = img.get_rect(center = img_center)
+        # blit
         self.surf.blit(img, self.piece.texture_rect)
     
     # Other Methods
