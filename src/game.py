@@ -1,16 +1,15 @@
 import pygame
 from board import Board
-from const import *
-from dragger import Dragger
-from helpers import load_and_scale_svg
+from settings import *
+from utils.dragger import Dragger
 
 class Game:
-
     def __init__(self) -> None:
+        self.surf = pygame.display.get_surface()
         self.board = Board()
         self.dragger = Dragger()
 
-    def show_bg(self, surf) -> None:
+    def draw_bg(self) -> None:
         for row in range(ROWS):
             for col in range(COLS):
                 if (row + col) % 2 == 0:
@@ -20,9 +19,9 @@ class Game:
                 
                 rect = (col * SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE)
 
-                pygame.draw.rect(surf, color, rect)
+                pygame.draw.rect(self.surf, color, rect)
     
-    def show_pieces(self, surf):
+    def draw_pieces(self):
         for row in range(ROWS):
             for col in range(COLS):
                 # Check if there's a piece
@@ -34,4 +33,7 @@ class Game:
                         img = pygame.image.load(piece.texture).convert_alpha()
                         img_center = col * SQ_SIZE + SQ_SIZE // 2, row * SQ_SIZE + SQ_SIZE // 2
                         piece.texture_rect = img.get_rect(center = img_center)
-                        surf.blit(img, piece.texture_rect)
+                        self.surf.blit(img, piece.texture_rect)
+    
+        if self.dragger.dragging:
+            self.dragger.update_blit()
